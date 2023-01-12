@@ -1,5 +1,21 @@
 # Getting Started with Create React App
 
+# important npm commonds
+
+# 1 npm i react-router-dom concurrently
+
+# 2.npm i express
+
+# 3.npm i bcryptjs
+
+# 4.npm i jsonwebtoken
+
+# 5.npm i nodemon
+
+# 6.Set script json file to "both":" concurrently \"npm run start\" \"nodemon backend/index.js\""
+
+# 7. npm install react-router-dom
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
