@@ -7,6 +7,7 @@ const Notes = (props) => {
   const context = useContext(noteContext);
   const { notes, getNotes, addNote } = context;
   const [note, setNotes] = useState({
+    id: "",
     etitle: "",
     edescription: "",
     etag: "",
@@ -21,8 +22,9 @@ const Notes = (props) => {
   const ref = useRef(null);
 
   const handleClick = (e) => {
+    console.log("update the note......",note)
     e.preventDefault();
-    addNote(note.title, note.description, note.tag);
+    
   };
 
   const onChange = (e) => {
@@ -115,7 +117,7 @@ const Notes = (props) => {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button onClick={handleClick} type="button" className="btn btn-primary">
                 Update Note
               </button>
             </div>
