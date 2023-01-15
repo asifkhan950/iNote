@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/noteContext";
 import NoteItems from "./NoteItems";
 import AddNotes from "./AddNotes";
+import {useNavigate } from "react-router-dom";
 
 const Notes = (props) => {
   const context = useContext(noteContext);
-  const { notes, getNotes, addNote } = context;
+  let navigate = useNavigate();
+  const { notes, getNotes, editNotes } = context;
   const [note, setNotes] = useState({
     id: "",
     etitle: "",
@@ -13,18 +15,32 @@ const Notes = (props) => {
     etag: "",
   });
   useEffect(() => {
-    getNotes();
+    if(localStorage.getItem('token')){
+      console.log('token')
+      getNotes();
+    }else{
+      navigate("/login")
+    }
+    
+    
   }, []);
   const updateNote = (currentNote) => {
     ref.current.click();
-    setNotes({etitle :currentNote.title, edescription: currentNote.description, etag: currentNote.tag})
+    setNotes({
+      id: currentNote._id,
+      etitle: currentNote.title,
+      edescription: currentNote.description,
+      etag: currentNote.tag,
+    });
+    
   };
   const ref = useRef(null);
+  const refClose = useRef(null);
 
   const handleClick = (e) => {
-    console.log("update the note......",note)
-    e.preventDefault();
-    
+    editNotes(note.id, note.etitle, note.edescription, note.etag);
+    refClose.current.click();
+    props.showAlert("updated successfully", 'sccuess')
   };
 
   const onChange = (e) => {
@@ -33,7 +49,7 @@ const Notes = (props) => {
 
   return (
     <>
-      <AddNotes />
+      <AddNotes showAlert={props.showAlert}/>
       <button
         ref={ref}
         type="button"
@@ -77,7 +93,7 @@ const Notes = (props) => {
                     name="etitle"
                     aria-describedby="emailHelp"
                     value={note.etitle}
-                    onChange={onChange}
+                    onChange={onChange} minLength={5} required
                   />
                 </div>
                 <div className="mb-3">
@@ -90,7 +106,7 @@ const Notes = (props) => {
                     id="edescription"
                     name="edescription"
                     value={note.edescription}
-                    onChange={onChange}
+                    onChange={onChange} minLength={5} required
                   />
                 </div>
                 <div className="mb-3">
@@ -111,13 +127,19 @@ const Notes = (props) => {
 
             <div className="modal-footer">
               <button
+                ref={refClose}
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button onClick={handleClick} type="button" className="btn btn-primary">
+              <button
+              disabled = {note.etitle.length < 5 || note.edescription.length <5 }
+                onClick={handleClick}
+                type="button"
+                className="btn btn-dark"
+              >
                 Update Note
               </button>
             </div>
@@ -127,9 +149,12 @@ const Notes = (props) => {
 
       <div className="row  my-3">
         <h2> Your Notes </h2>
+        <div className="container mx-2">
+        {notes.length === 0 && "No Notes to Display..!"}
+        </div>
         {notes.map((note) => {
           return (
-            <NoteItems key={note._id} updateNote={updateNote} note={note} />
+            <NoteItems key={note._id} updateNote={updateNote} showAlert={props.showAlert} note={note} />
           );
         })}
       </div>

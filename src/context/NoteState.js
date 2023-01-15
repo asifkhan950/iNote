@@ -8,7 +8,7 @@ export const NoteState = (props) => {
   const [notes, setNotes] = useState(notesIntials);
   //GetAll Notes
   const getNotes = async () => {
-    console.log("adding a new note");
+    
     const response = await fetch(`${host}api/notes/fetchNotes`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
 
@@ -16,17 +16,17 @@ export const NoteState = (props) => {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNiYTc1ZTVmYzE5M2MxNmU0MjQyNTg3In0sImlhdCI6MTY3MzE3NjY1MX0.MrVrl7uwkek9xW-0vFZl2Cx6uLUIRgvGj5O1A8SFlgk",
+          localStorage.getItem('token')
       },
     });
     const json = await response.json(); // parses JSON response into native JavaScript objects
-    console.log(json);
+    
     setNotes(json);
   };
 
   //add Notes
   const addNote = async (title, description, tag) => {
-    console.log("adding a new note");
+    
     const response = await fetch(`${host}api/notes/addnotes`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
 
@@ -34,7 +34,7 @@ export const NoteState = (props) => {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNiYTc1ZTVmYzE5M2MxNmU0MjQyNTg3In0sImlhdCI6MTY3MzE3NjY1MX0.MrVrl7uwkek9xW-0vFZl2Cx6uLUIRgvGj5O1A8SFlgk",
+          localStorage.getItem('token')
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
@@ -45,6 +45,8 @@ export const NoteState = (props) => {
 
   //Delete Notes
   const deleteNotes = async (id) => {
+    
+
     const response = await fetch(`${host}api/notes/deletenotes/${id}`, {
       method: "DELETE", // *GET, POST, PUT, DELETE, etc.
 
@@ -52,14 +54,12 @@ export const NoteState = (props) => {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNiYTc1ZTVmYzE5M2MxNmU0MjQyNTg3In0sImlhdCI6MTY3MzE3NjY1MX0.MrVrl7uwkek9xW-0vFZl2Cx6uLUIRgvGj5O1A8SFlgk",
+          localStorage.getItem('token')
       },
       // body data type must match "Content-Type" header
     });
     const json = await response.json(); // parses JSON response into native JavaScript objects
-    console.log(json);
-
-    console.log("deleted the note" + id);
+  
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -68,33 +68,38 @@ export const NoteState = (props) => {
 
   //edite Notes
   const editNotes = async (id, title, description, tag) => {
-    //api call
-    const response = await fetch(`${host}/api/notes/updatenotes/${id}`, {
+    // API Call
+    const response = await fetch(`${host}api/notes/updatenote/${id}`, {
       method: "PUT", // *GET, POST, PUT, DELETE, etc.
 
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNiYTc1ZTVmYzE5M2MxNmU0MjQyNTg3In0sImlhdCI6MTY3MzE3NjY1MX0.MrVrl7uwkek9xW-0vFZl2Cx6uLUIRgvGj5O1A8SFlgk",
+          localStorage.getItem('token')
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
-    const json = await response.json(); // parses JSON response into native JavaScript objects
-    console.log(json);
+    const note = await response.json(); // parses JSON response into native JavaScript objects
 
-    //logic for client side for editing notes
+    //update notes state with the new note
+    const newNotes = notes.map((note) =>
+      note._id === id ? { ...note, title, description, tag } : note
+    );
+    setNotes(newNotes);
 
-    for (let index = 0; index < notes.length; index++) {
-      const element = notes[index];
+    // Logic to edit in client
+    for (let index = 0; index < newNotes.length; index++) {
+      const element = newNotes[index];
       if (element._id === id) {
-        element.title = title;
-        element.description = description;
-        element.tag = tag;
+        newNotes[index].title = title;
+        newNotes[index].description = description;
+        newNotes[index].tag = tag;
+        break;
       }
     }
+    setNotes(newNotes);
   };
-
   return (
     <noteContext.Provider
       value={{ notes, setNotes, addNote, deleteNotes, editNotes, getNotes }}

@@ -5,7 +5,7 @@ const AddNotes = (props) => {
   const [note, setNotes] = useState({
     title: "",
     description: "",
-    tag: "default",
+    tag: "",
   });
   const context = useContext(noteContext);
   const { addNote } = context;
@@ -13,6 +13,8 @@ const AddNotes = (props) => {
   const handleClick = (e) => {
     e.preventDefault();
     addNote(note.title, note.description, note.tag);
+    setNotes({title: "", description:"", tag:""})
+    props.showAlert("Successfuly Notes Added", 'success')
   };
 
   const onChange = (e) => {
@@ -33,7 +35,8 @@ const AddNotes = (props) => {
               id="title"
               name="title"
               aria-describedby="emailHelp"
-              onChange={onChange}
+              value={note.title}
+              onChange={onChange} minLength={5} required
             />
           </div>
           <div className="mb-3">
@@ -45,7 +48,8 @@ const AddNotes = (props) => {
               className="form-control"
               id="description"
               name="description"
-              onChange={onChange}
+              value={note.description}
+              onChange={onChange} minLength={5} required
             />
           </div>
           <div className="mb-3">
@@ -57,12 +61,13 @@ const AddNotes = (props) => {
               className="form-control"
               id="tag"
               name="tag"
-              onChange={onChange}
+              value={note.tag}
+              onChange={onChange} 
             />
           </div>
-          <button
+          <button disabled = {note.title.length < 5 || note.description.length <5 }
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-dark"
             onClick={handleClick}
           >
             Add Notes

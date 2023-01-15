@@ -19,10 +19,11 @@ router.post(
     }),
   ],
   async (req, res) => {
+    let success = false;
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success,errors: errors.array() });
     }
 
     try {
@@ -41,8 +42,10 @@ router.post(
           id: user.id, // id from database of user
         },
       };
-      const authenticationToken = jwt.sign(data, JWT_SECRECT); //signature of id
-      res.json({ authenticationToken }); //output to the user a token of entry
+      const authtoken = jwt.sign(data, JWT_SECRECT); //signature of id
+      
+      success = true;
+      res.json({ success,authtoken }); //output to the user a token of entry
     } catch (error) {
       // handle the error
       console.error(error);
@@ -87,9 +90,9 @@ router.post(
           id: user.id, // id from database of user
         },
       };
-      const authenticationToken = jwt.sign(data, JWT_SECRECT); //signature of id
+      const authtoken = jwt.sign(data, JWT_SECRECT); //signature of id
       success = true;
-      res.json({ success, authenticationToken }); //output to the user a token of entry
+      res.json({ success, authtoken }); //output to the user a token of entry
     } catch (error) {
       // handle the error
       console.error(error);
