@@ -26,9 +26,9 @@ const Signup = (props) => {
       // Save the auth token and redirect
       localStorage.setItem("token", json.authtoken);
       navigate("/Home");
-      props.showAlert("sign up :", "Success")
+      props.showAlert("sign up :", "Success");
     } else {
-      props.showAlert("invalid credentials ", "danger")
+      props.showAlert("invalid credentials ", "danger");
     }
   };
 

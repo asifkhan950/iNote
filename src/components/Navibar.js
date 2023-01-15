@@ -4,15 +4,13 @@ export const Navibar = () => {
   let navigate = useNavigate();
   let location = useLocation();
   useEffect(() => {}, [location]);
-  const handleLogout = () =>{
-    localStorage.removeItem('token');
-    navigate("/login")
-    
-  }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
   return (
     <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        
         <button
           className="navbar-toggler"
           type="button"
@@ -52,18 +50,32 @@ export const Navibar = () => {
                 </Link>
               </li>
             </ul>
-            {!localStorage.getItem('token')?
-            <form className="d-flex">
-              <Link className="btn btn-secondary mx-1" to="/login" role="button">
-                Login
-              </Link>
-              <Link className="btn btn-secondary mx-1" to="/signup" role="button">
-                Sign Up
-              </Link>
-            </form> :<button onClick={handleLogout} className=" btn btn-secondary"> Logout</button>}
+            {!localStorage.getItem("token") ? (
+              <form className="d-flex">
+                <Link
+                  className="btn btn-secondary mx-1"
+                  to="/login"
+                  role="button"
+                >
+                  Login
+                </Link>
+                <Link
+                  className="btn btn-secondary mx-1"
+                  to="/signup"
+                  role="button"
+                >
+                  Sign Up
+                </Link>
+              </form>
+            ) : (
+              <button onClick={handleLogout} className=" btn btn-secondary">
+                {" "}
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>
     </nav>
   );
-}; 
+};

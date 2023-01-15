@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs"); //imported bcrypt function
 const jwt = require("jsonwebtoken");
 //create user using: POST "/api/auth/createuser" doesnt required auth
 const JWT_SECRECT = "EMPEROR";
-var fetchuser = require('../middleware/fetchuser');
+var fetchuser = require("../middleware/fetchuser");
 // ROUTE 1: Create a User using: POST "/api/auth/createuser". No login required
 router.post(
   "/createuser",
@@ -23,7 +23,7 @@ router.post(
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success,errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
     try {
@@ -43,9 +43,9 @@ router.post(
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRECT); //signature of id
-      
+
       success = true;
-      res.json({ success,authtoken }); //output to the user a token of entry
+      res.json({ success, authtoken }); //output to the user a token of entry
     } catch (error) {
       // handle the error
       console.error(error);
@@ -102,15 +102,14 @@ router.post(
 );
 
 // ROUTE 3: Get loggedin User Details using: POST "/api/auth/getuser". Login required
-router.post('/getuser', fetchuser,  async (req, res) => {
-
+router.post("/getuser", fetchuser, async (req, res) => {
   try {
-    userId = req.user.id; // here we take referece of id  
-    const user = await User.findById(userId).select("-password")// here we collect all the data of User and puts into user except -password
-    res.send(user) //res.send()is a function that sends the user object as a response to a request in a web server.
+    userId = req.user.id; // here we take referece of id
+    const user = await User.findById(userId).select("-password"); // here we collect all the data of User and puts into user except -password
+    res.send(user); //res.send()is a function that sends the user object as a response to a request in a web server.
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal Server Error");
   }
-})
+});
 module.exports = router;

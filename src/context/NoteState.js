@@ -8,33 +8,29 @@ export const NoteState = (props) => {
   const [notes, setNotes] = useState(notesIntials);
   //GetAll Notes
   const getNotes = async () => {
-    
     const response = await fetch(`${host}api/notes/fetchNotes`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
 
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
-        "auth-token":
-          localStorage.getItem('token')
+        "auth-token": localStorage.getItem("token"),
       },
     });
     const json = await response.json(); // parses JSON response into native JavaScript objects
-    
+
     setNotes(json);
   };
 
   //add Notes
   const addNote = async (title, description, tag) => {
-    
     const response = await fetch(`${host}api/notes/addnotes`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
 
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
-        "auth-token":
-          localStorage.getItem('token')
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
@@ -45,21 +41,18 @@ export const NoteState = (props) => {
 
   //Delete Notes
   const deleteNotes = async (id) => {
-    
-
     const response = await fetch(`${host}api/notes/deletenotes/${id}`, {
       method: "DELETE", // *GET, POST, PUT, DELETE, etc.
 
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
-        "auth-token":
-          localStorage.getItem('token')
+        "auth-token": localStorage.getItem("token"),
       },
       // body data type must match "Content-Type" header
     });
     const json = await response.json(); // parses JSON response into native JavaScript objects
-  
+
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -75,8 +68,7 @@ export const NoteState = (props) => {
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
-        "auth-token":
-          localStorage.getItem('token')
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
